@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "paths": {
-            "*": [
+            "@/*": [
                 "./src/*"
             ],
             "@assets/*": [
@@ -9,6 +9,9 @@
             ],
             "@components/*": [
                 "./src/components/*"
+            ],
+            "@config/*": [
+                "./src/config/*"
             ],
             "@hooks/*": [
                 "./src/hooks/*"
@@ -29,5 +32,12 @@
                 "./src/utils/*"
             ]
         }
-    }
+    },
+    "include": [
+        "src"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ]
 }
