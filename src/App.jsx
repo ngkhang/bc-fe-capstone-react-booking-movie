@@ -1,8 +1,11 @@
+import { BrowserRouter, Routes } from "react-router-dom";
+import { renderRoutes } from "@routes";
+
 function App() {
   return (
-    <>
-      <h1>Movie Booking App</h1>
-    </>
+    <BrowserRouter>
+      <Routes>{renderRoutes()}</Routes>
+    </BrowserRouter>
   );
 }
 

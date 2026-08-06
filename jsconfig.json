@@ -28,6 +28,9 @@
             "@store/*": [
                 "./src/store/*"
             ],
+            "@templates/*": [
+                "./src/templates/*"
+            ],
             "@utils/*": [
                 "./src/utils/*"
             ]
