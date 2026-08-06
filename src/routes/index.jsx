@@ -5,7 +5,10 @@ import {
   DefaultTemplate,
   UserTemplate,
 } from "@/templates";
-import { Route } from "react-router-dom";
+import { Navigate, Route } from "react-router-dom";
+
+const buildElement = (item) =>
+  item.redirect ? <Navigate to={item.redirect} replace /> : <item.element />;
 
 const routes = [
   {
@@ -22,6 +25,10 @@ const routes = [
     path: "auth",
     element: AuthTemplate,
     children: [
+      {
+        path: "",
+        redirect: "login",
+      },
       {
         path: "login",
         element: Login,
@@ -50,7 +57,11 @@ export const renderRoutes = () => {
   return routes.map((route) => {
     if (!route.children) {
       return (
-        <Route key={route.path} path={route.path} element={<route.element />} />
+        <Route
+          key={route.path}
+          path={route.path}
+          element={buildElement(route)}
+        />
       );
     }
 
@@ -58,15 +69,23 @@ export const renderRoutes = () => {
       <Route
         key={route.path || "root-base"}
         path={route.path}
-        element={<route.element />}
+        element={buildElement(route)}
       >
-        {route.children.map((item) => (
-          <Route
-            key={item.path || "root-base"}
-            path={item.path}
-            element={<item.element />}
-          />
-        ))}
+        {route.children.map((item) =>
+          item.path == "" ? (
+            <Route
+              key={`${route.path}-index`}
+              index
+              element={buildElement(item)}
+            />
+          ) : (
+            <Route
+              key={item.path}
+              path={item.path}
+              element={buildElement(item)}
+            />
+          ),
+        )}
       </Route>
     );
   });
