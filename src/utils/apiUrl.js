@@ -16,5 +16,8 @@ export const API = {
     LayThongTinPhim: (MaPhim) =>
       `/${QuanLyPhim}/LayThongTinPhim?MaPhim=${MaPhim}`,
   },
-  [QuanLyRap]: {},
+  [QuanLyRap]: {
+    LayThongTinHeThongRap: `/${QuanLyRap}/LayThongTinHeThongRap`,
+    LayThongTinLichChieuHeThongRap: (maHeThongRap) => `/${QuanLyRap}/LayThongTinLichChieuHeThongRap?maHeThongRap=${maHeThongRap}&maNhom=${GROUP_CODE}`,
+  },
 };
