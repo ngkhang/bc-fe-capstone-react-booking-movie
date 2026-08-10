@@ -1,23 +1,36 @@
 import { Button } from "flowbite-react";
 import { Link } from "react-router-dom";
 import { PlayCircleIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
+import TrailerModal from "@/components/TrailerModel";
+import { getYoutubeEmbedUrl } from "@/utils/helper";
 
 export function MovieItem(props) {
+  const [isTrailerOpen, setIsTrailerOpen] = useState(false);
   const { danhGia, hinhAnh, maPhim, tenPhim, trailer, biDanh } = props.movie;
+
+  const hasTrailer = Boolean(getYoutubeEmbedUrl(trailer));
+
   return (
     <div className="group flex flex-col">
-      <Link to={trailer} className="relative">
+      <button
+        type="button"
+        onClick={() => hasTrailer && setIsTrailerOpen(true)}
+        className="group relative h-96 w-full flex-none overflow-hidden rounded-md md:w-64"
+      >
         <img
-          alt={biDanh}
           src={hinhAnh}
-          className="aspect-square w-full rounded-lg bg-gray-200 object-cover group-hover:opacity-75 xl:aspect-7/8"
+          alt={biDanh}
+          className="h-full w-full object-cover"
         />
+        {hasTrailer && (
+          <span className="absolute inset-0 flex items-center justify-center bg-black/0 transition-colors group-hover:bg-black/30">
+            <PlayCircleIcon className="size-14 text-white opacity-0 transition-opacity group-hover:opacity-100" />
+          </span>
+        )}
+      </button>
 
-        <PlayCircleIcon className="absolute max-w-xs opacity-0 group-hover:opacity-75 group-hover:visible text-gray-100 size-1/3 top-1/2 left-1/2 -translate-1/2" />
-      </Link>
-
-      {/* TODO: Implement to movie detail */}
-      <Link to={maPhim} className="mb-1.5">
+      <Link to={`/movies/${maPhim}`} className="mb-1.5">
         <h3 className="mt-4 text-sm font-bold text-gray-700">{tenPhim}</h3>
       </Link>
 
@@ -36,6 +49,13 @@ export function MovieItem(props) {
 
         <Button className="cursor-pointer">Booking now</Button>
       </div>
+
+      <TrailerModal
+        isOpen={isTrailerOpen}
+        onClose={() => setIsTrailerOpen(false)}
+        trailerUrl={trailer}
+        title={tenPhim}
+      />
     </div>
   );
 }
