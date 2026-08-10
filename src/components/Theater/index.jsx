@@ -9,6 +9,9 @@ const fetchMovieShowTimes = async (codeTheaterSystem) =>
     API.QuanLyRap.LayThongTinLichChieuHeThongRap(codeTheaterSystem),
   );
 
+const getShowingMovies = (danhSachPhim) =>
+  danhSachPhim.filter((item) => item.dangChieu === true);
+
 const Theater = () => {
   const [listTheaterSystems, setListTheaterSystems] = useState([]);
   const [listMovieShowtime, setListMovieShowtime] = useState([]);
@@ -24,13 +27,15 @@ const Theater = () => {
       if (res && res.length !== 0) {
         const codeTheaterSystem = res[0].maHeThongRap;
         const movieShowTimes = await fetchMovieShowTimes(codeTheaterSystem);
-        console.log(movieShowTimes);
+
         setSelectedTheaterSystem(codeTheaterSystem);
         setListMovieShowtime(movieShowTimes);
 
-        if (movieShowTimes && movieShowTimes.length !== 0) {
+        if (movieShowTimes?.length && movieShowTimes[0].lstCumRap?.length) {
           setSelectedTheater(0);
-          setListMovie(movieShowTimes[0].lstCumRap[0].danhSachPhim);
+          setListMovie(
+            getShowingMovies(movieShowTimes[0].lstCumRap[0].danhSachPhim),
+          );
         }
       }
     };
@@ -43,17 +48,18 @@ const Theater = () => {
     const movieShowTimes = await fetchMovieShowTimes(codeTheaterSystem);
     setListMovieShowtime(movieShowTimes);
 
-    if (movieShowTimes && movieShowTimes.length !== 0) {
+    if (movieShowTimes?.length && movieShowTimes[0].lstCumRap?.length) {
       setSelectedTheater(0);
-      setListMovie(movieShowTimes[0].lstCumRap[0].danhSachPhim);
+      setListMovie(
+        getShowingMovies(movieShowTimes[0].lstCumRap[0].danhSachPhim),
+      );
     }
   };
 
   const handleChangeListMovie = (index) => {
     setSelectedTheater(index);
     const danhSachPhim = listMovieShowtime[0].lstCumRap[index].danhSachPhim;
-    const movieComing = danhSachPhim.filter((item) => item.dangChieu === true);
-    setListMovie(movieComing);
+    setListMovie(getShowingMovies(danhSachPhim));
   };
 
   return (
@@ -63,14 +69,13 @@ const Theater = () => {
         {listTheaterSystems.map(({ maHeThongRap, logo, tenHeThongRap }) => {
           return (
             <div
-              key={maHeThongRap}
-              className={`p-3 rounded-sm ${selectedTheaterSystem === maHeThongRap ? "bg-gray-100" : "bg-transparent"}`}
+              className={`p-3 rounded-sm cursor-pointer ${selectedTheaterSystem === maHeThongRap ? "bg-gray-100" : "bg-transparent"}`}
+              onClick={() => handleChangeTheaterSystem(maHeThongRap)}
             >
               <img
                 alt={tenHeThongRap}
                 src={logo}
-                className="inline-block size-12 rounded-full ring-2 ring-white outline -outline-offset-1 outline-black/5"
-                onClick={() => handleChangeTheaterSystem(maHeThongRap)}
+                className="inline-block size-12 rounded-full ..."
               />
             </div>
           );
