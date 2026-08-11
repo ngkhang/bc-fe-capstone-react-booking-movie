@@ -1,4 +1,5 @@
 import { HomePage, Login, PageNotFound, Register } from "@/pages";
+import MovieDetail from "@/pages/MovieDetail";
 import {
   AdminTemplate,
   AuthTemplate,
@@ -18,6 +19,10 @@ const routes = [
       {
         path: "",
         element: HomePage,
+      },
+      {
+        path: "movies/:maPhim",
+        element: MovieDetail,
       },
     ],
   },

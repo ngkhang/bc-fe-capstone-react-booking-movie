@@ -18,6 +18,9 @@ export const API = {
   },
   [QuanLyRap]: {
     LayThongTinHeThongRap: `/${QuanLyRap}/LayThongTinHeThongRap`,
-    LayThongTinLichChieuHeThongRap: (maHeThongRap) => `/${QuanLyRap}/LayThongTinLichChieuHeThongRap?maHeThongRap=${maHeThongRap}&maNhom=${GROUP_CODE}`,
+    LayThongTinLichChieuHeThongRap: (maHeThongRap) =>
+      `/${QuanLyRap}/LayThongTinLichChieuHeThongRap?maHeThongRap=${maHeThongRap}&maNhom=${GROUP_CODE}`,
+    LayThongTinLichChieuPhim: (MaPhim) =>
+      `/${QuanLyRap}/LayThongTinLichChieuPhim?MaPhim=${MaPhim}`,
   },
 };
