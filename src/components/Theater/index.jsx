@@ -1,3 +1,4 @@
+import useRoute from "@/hooks/useRoute";
 import { httpClient } from "@/services/httpClient";
 import { API } from "@/utils/apiUrl";
 import { formatDate } from "@/utils/helper";
@@ -13,6 +14,7 @@ const getShowingMovies = (danhSachPhim) =>
   danhSachPhim.filter((item) => item.dangChieu === true);
 
 const Theater = () => {
+  const { navigate } = useRoute();
   const [listTheaterSystems, setListTheaterSystems] = useState([]);
   const [listMovieShowtime, setListMovieShowtime] = useState([]);
   const [listMovie, setListMovie] = useState([]);
@@ -129,7 +131,10 @@ const Theater = () => {
                             src={movie.hinhAnh}
                             className="w-24 h-30 flex-none rounded-md bg-gray-50"
                           />
-                          <div className="min-w-0 flex-auto">
+                          <div
+                            className="min-w-0 flex-auto"
+                            onClick={() => navigate(`/movies/${movie.maPhim}`)}
+                          >
                             <p className="text-xl font-semibold text-gray-900">
                               {movie.tenPhim}
                             </p>

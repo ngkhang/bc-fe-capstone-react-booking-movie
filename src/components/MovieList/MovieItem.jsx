@@ -4,8 +4,10 @@ import { PlayCircleIcon } from "@heroicons/react/24/outline";
 import { useState } from "react";
 import TrailerModal from "@/components/TrailerModel";
 import { getYoutubeEmbedUrl } from "@/utils/helper";
+import useRoute from "@/hooks/useRoute";
 
 export function MovieItem(props) {
+  const { navigate } = useRoute();
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
   const { danhGia, hinhAnh, maPhim, tenPhim, trailer, biDanh } = props.movie;
 
@@ -47,7 +49,12 @@ export function MovieItem(props) {
           <p className="text-lg font-medium text-gray-900">{danhGia}</p>
         </div>
 
-        <Button className="cursor-pointer">Booking now</Button>
+        <Button
+          className="cursor-pointer"
+          onClick={() => navigate(`/movies/${maPhim}`)}
+        >
+          Booking now
+        </Button>
       </div>
 
       <TrailerModal
