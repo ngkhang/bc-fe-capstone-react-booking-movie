@@ -1,4 +1,6 @@
 import { API_BASE_URL, TOKEN_CYBERSOFT } from "@/config/env";
+import { SERVICES } from "@/utils/constant";
+import { getLocalStorage } from "@/utils/storage";
 import axios from "axios";
 
 const ERRORS = {
@@ -35,12 +37,13 @@ const httpClient = axios.create({
 
 httpClient.interceptors.request.use(
   (config) => {
+    const accessToken = getLocalStorage(SERVICES.ACCESS_TOKEN);
+
     if (config.headers) {
       config.headers = {
         ...config.headers,
         TokenCybersoft: TOKEN_CYBERSOFT,
-        // TODO: Implement Authentication
-        Authorization: "accessToken",
+        ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
       };
     }
     return config;

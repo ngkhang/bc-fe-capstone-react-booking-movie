@@ -1,3 +1,6 @@
+import useRoute from "@/hooks/useRoute";
+import { SERVICES, STORAGE_KEY_USER } from "@/utils/constant";
+import { deleteLocalStorage, getLocalStorage } from "@/utils/storage";
 import {
   Disclosure,
   DisclosureButton,
@@ -10,23 +13,15 @@ import {
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 
-const user = {
-  name: "Tom Cook",
-  email: "tom@example.com",
-  imageUrl:
-    "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80",
-};
-
 const navigation = [
   { name: "Trang chủ", href: "/", current: true },
-  { name: "Liên hệ", href: "#", current: false },
+  { name: "Lịch chiếu phim", href: "/movies", current: false },
   { name: "Tin Tức", href: "#", current: false },
 ];
 
 const userNavigation = [
-  { name: "Your profile", href: "#" },
+  { name: "Your profile", href: "/user/profile" },
   { name: "Settings", href: "#" },
-  { name: "Sign out", href: "#" },
 ];
 
 function classNames(...classes) {
@@ -34,6 +29,16 @@ function classNames(...classes) {
 }
 
 export default function Header() {
+  const { navigate } = useRoute();
+
+  const userInfo = getLocalStorage(STORAGE_KEY_USER);
+
+  const handleLogout = () => {
+    deleteLocalStorage(STORAGE_KEY_USER);
+    deleteLocalStorage(SERVICES.ACCESS_TOKEN);
+    navigate("/");
+  };
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -78,50 +83,64 @@ export default function Header() {
 
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
-              <button
-                type="button"
-                className="relative rounded-full p-1 text-gray-400 hover:text-white focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500"
-              >
-                <span className="absolute -inset-1.5" />
-                <span className="sr-only">View notifications</span>
-                <BellIcon aria-hidden="true" className="size-6" />
-              </button>
-
-              <Link
-                to="/auth/login"
-                className="text-gray-300 hover:bg-white/5 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-              >
-                Login
-              </Link>
-
-              {/* Profile dropdown */}
-              <Menu as="div" className="relative ml-3">
-                <MenuButton className="relative flex max-w-xs items-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
-                  <span className="absolute -inset-1.5" />
-                  <span className="sr-only">Open user menu</span>
-                  <img
-                    alt=""
-                    src={user.imageUrl}
-                    className="size-8 rounded-full outline -outline-offset-1 outline-white/10"
-                  />
-                </MenuButton>
-
-                <MenuItems
-                  transition
-                  className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline-1 outline-black/5 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
+              {!userInfo ? (
+                <Link
+                  to="/auth/login"
+                  className="text-gray-300 hover:bg-white/5 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
                 >
-                  {userNavigation.map((item) => (
-                    <MenuItem key={item.name}>
-                      <a
-                        href={item.href}
-                        className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
-                      >
-                        {item.name}
-                      </a>
-                    </MenuItem>
-                  ))}
-                </MenuItems>
-              </Menu>
+                  Login
+                </Link>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className="relative rounded-full p-1 text-gray-400 hover:text-white focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500"
+                  >
+                    <span className="absolute -inset-1.5" />
+                    <span className="sr-only">View notifications</span>
+                    <BellIcon aria-hidden="true" className="size-6" />
+                  </button>
+
+                  {/* Profile dropdown */}
+                  <Menu as="div" className="relative ml-3">
+                    <MenuButton className="relative flex max-w-xs items-center rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500">
+                      <span className="absolute -inset-1.5" />
+                      <span className="sr-only">Open user menu</span>
+                      <img
+                        alt=""
+                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        className="size-8 rounded-full outline -outline-offset-1 outline-white/10"
+                      />
+                    </MenuButton>
+
+                    <MenuItems
+                      transition
+                      className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg outline-1 outline-black/5 transition data-closed:scale-95 data-closed:transform data-closed:opacity-0 data-enter:duration-100 data-enter:ease-out data-leave:duration-75 data-leave:ease-in"
+                    >
+                      {userNavigation.map((item) => (
+                        <MenuItem key={item.name}>
+                          <Link
+                            to={item.href}
+                            className="block px-4 py-2 text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
+                          >
+                            {item.name}
+                          </Link>
+                        </MenuItem>
+                      ))}
+
+                      <MenuItem>
+                        <button
+                          type="button"
+                          onClick={handleLogout}
+                          className="block w-full px-4 py-2 text-left text-sm text-gray-700 data-focus:bg-gray-100 data-focus:outline-hidden"
+                        >
+                          Logout
+                        </button>
+                      </MenuItem>
+                    </MenuItems>
+                  </Menu>
+                </>
+              )}
             </div>
           </div>
 
@@ -162,61 +181,70 @@ export default function Header() {
             </DisclosureButton>
           ))}
         </div>
-        {/* TODO: Login */}
-        <div className="border-t border-white/10 pt-4 pb-3">
-          <div className="space-y-1 px-2">
-            <DisclosureButton
-              as="a"
-              href="/auth/login"
-              className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white"
-            >
-              Login
-            </DisclosureButton>
-          </div>
-        </div>
 
-        <div className="border-t border-white/10 pt-4 pb-3">
-          <div className="flex items-center px-5">
-            <div className="shrink-0">
-              <img
-                alt=""
-                src={user.imageUrl}
-                className="size-10 rounded-full outline -outline-offset-1 outline-white/10"
-              />
-            </div>
-
-            <div className="ml-3">
-              <div className="text-base/5 font-medium text-white">
-                {user.name}
-              </div>
-              <div className="text-sm font-medium text-gray-400">
-                {user.email}
-              </div>
-            </div>
-
-            <button
-              type="button"
-              className="relative ml-auto shrink-0 rounded-full p-1 text-gray-400 hover:text-white focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500"
-            >
-              <span className="absolute -inset-1.5" />
-              <span className="sr-only">View notifications</span>
-              <BellIcon aria-hidden="true" className="size-6" />
-            </button>
-          </div>
-
-          <div className="mt-3 space-y-1 px-2">
-            {userNavigation.map((item) => (
+        {!userInfo ? (
+          <div className="border-t border-white/10 pt-4 pb-3">
+            <div className="space-y-1 px-2">
               <DisclosureButton
-                key={item.name}
                 as="a"
-                href={item.href}
+                href="/auth/login"
                 className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white"
               >
-                {item.name}
+                Login
               </DisclosureButton>
-            ))}
+            </div>
           </div>
-        </div>
+        ) : (
+          <div className="border-t border-white/10 pt-4 pb-3">
+            <div className="flex items-center px-5">
+              <div className="shrink-0">
+                <img
+                  alt=""
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  className="size-10 rounded-full outline -outline-offset-1 outline-white/10"
+                />
+              </div>
+
+              <div className="ml-3">
+                <div className="text-base/5 font-medium text-white">
+                  {userInfo.hoTen}
+                </div>
+                <div className="text-sm font-medium text-gray-400">
+                  {userInfo.email}
+                </div>
+              </div>
+
+              <button
+                type="button"
+                className="relative ml-auto shrink-0 rounded-full p-1 text-gray-400 hover:text-white focus:outline-2 focus:outline-offset-2 focus:outline-indigo-500"
+              >
+                <span className="absolute -inset-1.5" />
+                <span className="sr-only">View notifications</span>
+                <BellIcon aria-hidden="true" className="size-6" />
+              </button>
+            </div>
+
+            <div className="mt-3 space-y-1 px-2">
+              {userNavigation.map((item) => (
+                <DisclosureButton
+                  key={item.name}
+                  as="a"
+                  href={item.href}
+                  className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white"
+                >
+                  {item.name}
+                </DisclosureButton>
+              ))}
+              <DisclosureButton
+                as="a"
+                onClick={() => handleLogout()}
+                className="block rounded-md px-3 py-2 text-base font-medium text-gray-400 hover:bg-white/5 hover:text-white"
+              >
+                Logout
+              </DisclosureButton>
+            </div>
+          </div>
+        )}
       </DisclosurePanel>
     </Disclosure>
   );

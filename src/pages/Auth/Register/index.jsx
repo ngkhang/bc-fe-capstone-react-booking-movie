@@ -1,40 +1,73 @@
+import useRoute from "@/hooks/useRoute";
+import { httpClient } from "@/services/httpClient";
+import { API } from "@/utils/apiUrl";
+import { notifyError, notifySuccess } from "@/utils/toast";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const Register = () => {
+  const { navigate } = useRoute();
+  const [formData, setFormData] = useState({
+    hoTen: "",
+    taiKhoan: "",
+    email: "",
+    matKhau: "",
+    soDt: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    try {
+      await httpClient.post(API.QuanLyNguoiDung.DangKy, formData);
+      notifySuccess("Đăng ký thành công! Vui lòng đăng nhập.");
+      navigate("/auth/login");
+    } catch (error) {
+      const message =
+        error?.response?.data?.content ||
+        error?.response?.data?.message ||
+        "Đăng ký thất bại. Vui lòng thử lại.";
+      notifyError(message);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div>
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-        {/* <img
-          alt="Your Company"
-          src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
-          className="mx-auto h-10 w-auto"
-        /> */}
         <h2 className="text-center text-2xl/9 font-bold tracking-tight text-gray-900">
           Get started
         </h2>
       </div>
 
       <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm md:max-w-xl">
-        {/* TODO: Implement form */}
         <form
-          action="#"
-          method="POST"
+          onSubmit={handleSubmit}
           className="grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2"
         >
           <div>
             <label
-              htmlFor="fullName"
+              htmlFor="hoTen"
               className="block text-sm/6 font-medium text-gray-900"
             >
               Full name
             </label>
             <div className="mt-2">
               <input
-                id="fullName"
-                name="fullName"
+                id="hoTen"
+                name="hoTen"
                 type="text"
                 required
                 autoComplete="name"
+                value={formData.hoTen}
+                onChange={handleChange}
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               />
             </div>
@@ -42,18 +75,20 @@ const Register = () => {
 
           <div>
             <label
-              htmlFor="username"
+              htmlFor="taiKhoan"
               className="block text-sm/6 font-medium text-gray-900"
             >
               Username
             </label>
             <div className="mt-2">
               <input
-                id="username"
-                name="username"
+                id="taiKhoan"
+                name="taiKhoan"
                 type="text"
                 required
                 autoComplete="username"
+                value={formData.taiKhoan}
+                onChange={handleChange}
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               />
             </div>
@@ -73,6 +108,8 @@ const Register = () => {
                 type="email"
                 required
                 autoComplete="email"
+                value={formData.email}
+                onChange={handleChange}
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               />
             </div>
@@ -81,7 +118,7 @@ const Register = () => {
           <div className="col-span-full">
             <div className="flex items-center justify-between">
               <label
-                htmlFor="password"
+                htmlFor="matKhau"
                 className="block text-sm/6 font-medium text-gray-900"
               >
                 Password
@@ -89,11 +126,13 @@ const Register = () => {
             </div>
             <div className="mt-2">
               <input
-                id="password"
-                name="password"
+                id="matKhau"
+                name="matKhau"
                 type="password"
                 required
-                autoComplete="current-password"
+                autoComplete="new-password"
+                value={formData.matKhau}
+                onChange={handleChange}
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               />
             </div>
@@ -101,18 +140,20 @@ const Register = () => {
 
           <div className="col-span-full">
             <label
-              htmlFor="phoneNumber"
+              htmlFor="soDt"
               className="block text-sm/6 font-medium text-gray-900"
             >
               Phone number
             </label>
             <div className="mt-2">
               <input
-                id="phoneNumber"
-                name="phoneNumber"
+                id="soDt"
+                name="soDt"
                 type="text"
                 required
                 autoComplete="tel"
+                value={formData.soDt}
+                onChange={handleChange}
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               />
             </div>
@@ -121,9 +162,10 @@ const Register = () => {
           <div className="col-span-full">
             <button
               type="submit"
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              disabled={isSubmitting}
+              className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm/6 font-semibold text-white shadow-xs hover:bg-indigo-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              Register
+              {isSubmitting ? "Creating account..." : "Register"}
             </button>
           </div>
         </form>
