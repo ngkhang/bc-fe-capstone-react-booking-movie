@@ -1,4 +1,6 @@
 import { API_BASE_URL, TOKEN_CYBERSOFT } from "@/config/env";
+import { store } from "@/store";
+import { clearUser } from "@/store/slices/authSlice";
 import { SERVICES } from "@/utils/constant";
 import { getLocalStorage } from "@/utils/storage";
 import axios from "axios";
@@ -59,9 +61,16 @@ httpClient.interceptors.response.use(
   },
   (error) => {
     if (error.response) {
-      let { status, statusText } = error.response;
-      let messError = ERRORS.CODE[status];
-      console.error(messError || `Error ${status}: ${statusText}`);
+      const { status, statusText } = error.response;
+
+      if (status === 401) {
+        store.dispatch(clearUser());
+        if (!window.location.pathname.startsWith("/auth/login")) {
+          window.location.href = "/auth/login";
+        }
+      }
+
+      console.error(ERRORS.CODE[status] || `Error ${status}: ${statusText}`);
     } else {
       console.error(
         error.request ? ERRORS.SERVER : `${ERRORS.REQUEST}: ${error.message}`,

@@ -1,5 +1,12 @@
-import { HomePage, Login, PageNotFound, Register } from "@/pages";
-import MovieDetail from "@/pages/MovieDetail";
+import {
+  AdminDashBoard,
+  HomePage,
+  Login,
+  MovieDetail,
+  PageNotFound,
+  Register,
+  UserProfile,
+} from "@/pages";
 import {
   AdminTemplate,
   AuthTemplate,
@@ -7,9 +14,27 @@ import {
   UserTemplate,
 } from "@/templates";
 import { Navigate, Route } from "react-router-dom";
+import { AdminRoute, GuestOnlyRoute, ProtectedRoute } from "./guards";
 
-const buildElement = (item) =>
-  item.redirect ? <Navigate to={item.redirect} replace /> : <item.element />;
+const GUARDS = {
+  protected: ProtectedRoute,
+  guestOnly: GuestOnlyRoute,
+  admin: AdminRoute,
+};
+
+const buildElement = (item) => {
+  if (item.redirect) return <Navigate to={item.redirect} replace />;
+
+  const Element = item.element;
+  let content = <Element />;
+
+  if (item.guard) {
+    const Guard = GUARDS[item.guard];
+    content = <Guard>{content}</Guard>;
+  }
+
+  return content;
+};
 
 const routes = [
   {
@@ -29,6 +54,7 @@ const routes = [
   {
     path: "auth",
     element: AuthTemplate,
+    guard: "guestOnly",
     children: [
       {
         path: "",
@@ -47,10 +73,24 @@ const routes = [
   {
     path: "admin",
     element: AdminTemplate,
+    guard: "admin",
+    children: [
+      {
+        path: "dashboard",
+        element: AdminDashBoard,
+      },
+    ],
   },
   {
     path: "user",
     element: UserTemplate,
+    guard: "protected",
+    children: [
+      {
+        path: "profile",
+        element: UserProfile,
+      },
+    ],
   },
   {
     path: "*",

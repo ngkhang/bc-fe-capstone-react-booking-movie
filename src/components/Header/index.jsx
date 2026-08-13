@@ -1,6 +1,4 @@
 import useRoute from "@/hooks/useRoute";
-import { SERVICES, STORAGE_KEY_USER } from "@/utils/constant";
-import { deleteLocalStorage, getLocalStorage } from "@/utils/storage";
 import {
   Disclosure,
   DisclosureButton,
@@ -12,6 +10,12 @@ import {
 } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  clearUser,
+  selectIsLoggedIn,
+  selectUserInfo,
+} from "@/store/slices/authSlice";
 
 const navigation = [
   { name: "Trang chủ", href: "/", current: true },
@@ -30,12 +34,12 @@ function classNames(...classes) {
 
 export default function Header() {
   const { navigate } = useRoute();
-
-  const userInfo = getLocalStorage(STORAGE_KEY_USER);
+  const dispatch = useDispatch();
+  const userInfo = useSelector(selectUserInfo);
+  const isLoggedIn = useSelector(selectIsLoggedIn);
 
   const handleLogout = () => {
-    deleteLocalStorage(STORAGE_KEY_USER);
-    deleteLocalStorage(SERVICES.ACCESS_TOKEN);
+    dispatch(clearUser());
     navigate("/");
   };
 
@@ -83,7 +87,7 @@ export default function Header() {
 
           <div className="hidden md:block">
             <div className="ml-4 flex items-center md:ml-6">
-              {!userInfo ? (
+              {!isLoggedIn ? (
                 <Link
                   to="/auth/login"
                   className="text-gray-300 hover:bg-white/5 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
@@ -182,7 +186,7 @@ export default function Header() {
           ))}
         </div>
 
-        {!userInfo ? (
+        {!isLoggedIn ? (
           <div className="border-t border-white/10 pt-4 pb-3">
             <div className="space-y-1 px-2">
               <DisclosureButton

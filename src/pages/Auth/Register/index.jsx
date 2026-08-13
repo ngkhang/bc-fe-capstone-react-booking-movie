@@ -12,7 +12,7 @@ const Register = () => {
     taiKhoan: "",
     email: "",
     matKhau: "",
-    soDt: "",
+    soDT: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -140,19 +140,19 @@ const Register = () => {
 
           <div className="col-span-full">
             <label
-              htmlFor="soDt"
+              htmlFor="soDT"
               className="block text-sm/6 font-medium text-gray-900"
             >
               Phone number
             </label>
             <div className="mt-2">
               <input
-                id="soDt"
-                name="soDt"
+                id="soDT"
+                name="soDT"
                 type="text"
                 required
                 autoComplete="tel"
-                value={formData.soDt}
+                value={formData.soDT}
                 onChange={handleChange}
                 className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
               />

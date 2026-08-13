@@ -1,14 +1,15 @@
 import useRoute from "@/hooks/useRoute";
 import { httpClient } from "@/services/httpClient";
 import { API } from "@/utils/apiUrl";
-import { SERVICES, STORAGE_KEY_USER } from "@/utils/constant";
-import { setLocalStorage } from "@/utils/storage";
 import { notifyError, notifySuccess } from "@/utils/toast";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { setUser } from "@/store/slices/authSlice";
+import { useDispatch } from "react-redux";
 
 const Login = () => {
   const { navigate } = useRoute();
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({ taiKhoan: "", matKhau: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -21,12 +22,9 @@ const Login = () => {
     e.preventDefault();
     setIsSubmitting(true);
     try {
-      const { accessToken, ...userInfo } = await httpClient.post(
-        API.QuanLyNguoiDung.DangNhap,
-        formData,
-      );
-      setLocalStorage(SERVICES.ACCESS_TOKEN, accessToken);
-      setLocalStorage(STORAGE_KEY_USER, userInfo);
+      const res = await httpClient.post(API.QuanLyNguoiDung.DangNhap, formData);
+      dispatch(setUser(res));
+      console.log(res);
       notifySuccess("Đăng nhập thành công!");
       navigate("/");
     } catch (error) {
