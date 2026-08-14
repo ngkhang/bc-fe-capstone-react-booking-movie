@@ -4,8 +4,9 @@ import {
   Login,
   MovieDetail,
   PageNotFound,
+  ProfileSetting,
   Register,
-  UserProfile,
+  UserDashboard,
 } from "@/pages";
 import {
   AdminTemplate,
@@ -87,9 +88,11 @@ const routes = [
     guard: "protected",
     children: [
       {
-        path: "profile",
-        element: UserProfile,
+        path: "",
+        redirect: "dashboard",
       },
+      { path: "dashboard", element: UserDashboard },
+      { path: "profile", element: ProfileSetting },
     ],
   },
   {

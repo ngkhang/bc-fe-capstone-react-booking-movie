@@ -4,7 +4,8 @@ import Register from "./Auth/Register";
 import HomePage from "./Home";
 import MovieDetail from "./MovieDetail";
 import PageNotFound from "./NotFound";
-import UserProfile from "./UserProfile";
+import UserDashboard from "./UserProfile/Dashboard";
+import ProfileSetting from "./UserProfile/ProfileSetting";
 
 export {
   HomePage,
@@ -12,6 +13,7 @@ export {
   Register,
   PageNotFound,
   MovieDetail,
-  UserProfile,
   AdminDashBoard,
+  UserDashboard,
+  ProfileSetting,
 };
