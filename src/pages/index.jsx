@@ -1,6 +1,7 @@
 import AdminDashboard from "./AdminDashboard";
 import Login from "./Auth/Login";
 import Register from "./Auth/Register";
+import BookingTicket from "./BookingTicket";
 import HomePage from "./Home";
 import MovieDetail from "./MovieDetail";
 import PageNotFound from "./NotFound";
@@ -18,4 +19,5 @@ export {
   UserDashboard,
   ProfileSetting,
   UserManagement,
+  BookingTicket,
 };

@@ -133,7 +133,9 @@ const Theater = () => {
                           />
                           <div
                             className="min-w-0 flex-auto"
-                            onClick={() => navigate(`/movies/${movie.maPhim}`)}
+                            onClick={() =>
+                              navigate(`/movies/detail/${movie.maPhim}`)
+                            }
                           >
                             <p className="text-xl font-semibold text-gray-900">
                               {movie.tenPhim}

@@ -1,5 +1,6 @@
 import {
   AdminDashboard,
+  BookingTicket,
   HomePage,
   Login,
   MovieDetail,
@@ -48,8 +49,12 @@ const routes = [
         element: HomePage,
       },
       {
-        path: "movies/:maPhim",
+        path: "movies/detail/:maPhim",
         element: MovieDetail,
+      },
+      {
+        path: "movies/booking/:maPhim",
+        element: BookingTicket,
       },
     ],
   },
