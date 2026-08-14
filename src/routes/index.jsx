@@ -1,5 +1,5 @@
 import {
-  AdminDashBoard,
+  AdminDashboard,
   HomePage,
   Login,
   MovieDetail,
@@ -7,6 +7,7 @@ import {
   ProfileSetting,
   Register,
   UserDashboard,
+  UserManagement,
 } from "@/pages";
 import {
   AdminTemplate,
@@ -76,10 +77,10 @@ const routes = [
     element: AdminTemplate,
     guard: "admin",
     children: [
-      {
-        path: "dashboard",
-        element: AdminDashBoard,
-      },
+      { path: "", redirect: "dashboard" },
+      { path: "dashboard", element: AdminDashboard },
+      { path: "user-management", element: UserManagement },
+      { path: "profile", element: ProfileSetting },
     ],
   },
   {

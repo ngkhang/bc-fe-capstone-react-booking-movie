@@ -1,5 +1,8 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import useRoute from "@/hooks/useRoute";
+import { clearUser } from "@/store/slices/authSlice";
+import { useDispatch } from "react-redux";
 import { NavLink, Outlet } from "react-router-dom";
 
 const navigation = [
@@ -12,6 +15,14 @@ function classNames(...classes) {
 }
 
 const UserTemplate = () => {
+  const dispatch = useDispatch();
+  const { navigate } = useRoute();
+
+  const handleLogout = () => {
+    dispatch(clearUser());
+    navigate("/");
+  };
+
   return (
     <div className="flex min-h-full flex-col bg-gray-100">
       <Header />
@@ -40,6 +51,14 @@ const UserTemplate = () => {
                   {item.name}
                 </NavLink>
               ))}
+
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="rounded-md bg-white px-3 py-2 text-left text-sm font-medium text-red-600 hover:bg-red-50"
+              >
+                Đăng xuất
+              </button>
             </nav>
           </aside>
 

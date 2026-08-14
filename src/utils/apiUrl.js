@@ -7,9 +7,19 @@ const QuanLyRap = "QuanLyRap";
 
 export const API = {
   [QuanLyDatVe]: {},
+
   [QuanLyNguoiDung]: {
     DangNhap: `/${QuanLyNguoiDung}/DangNhap`,
     DangKy: `/${QuanLyNguoiDung}/DangKy`,
+    ThongTinTaiKhoan: `/${QuanLyNguoiDung}/ThongTinTaiKhoan`,
+    LayDanhSachNguoiDung: `/${QuanLyNguoiDung}/LayDanhSachNguoiDung?maNhom=${GROUP_CODE}`,
+    ThemNguoiDung: `/${QuanLyNguoiDung}/ThemNguoiDung`,
+    CapNhatThongTinNguoiDung: `/${QuanLyNguoiDung}/CapNhatThongTinNguoiDung`,
+    XoaNguoiDung: (taiKhoan) =>
+      `/${QuanLyNguoiDung}/XoaNguoiDung?TaiKhoan=${taiKhoan}`,
+    LayDanhSachLoaiNguoiDung: `/${QuanLyNguoiDung}/LayDanhSachLoaiNguoiDung`,
+    LayDanhSachNguoiDungPhanTrang: (soTrang, soPhanTuTrenTrang) =>
+      `/${QuanLyNguoiDung}/LayDanhSachNguoiDungPhanTrang?maNhom=${GROUP_CODE}&soTrang=${soTrang}&soPhanTuTrenTrang=${soPhanTuTrenTrang}`,
   },
   [QuanLyPhim]: {
     LayDanhSachBanner: `/${QuanLyPhim}/LayDanhSachBanner`,

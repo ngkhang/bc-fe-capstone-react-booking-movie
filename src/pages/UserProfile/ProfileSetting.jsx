@@ -1,17 +1,34 @@
-import { selectUserInfo } from "@/store/slices/authSlice";
-import { notifyError, notifySuccess } from "@/utils/toast";
-import { useState } from "react";
-import { useSelector } from "react-redux";
+import { httpClient } from "@/services/httpClient";
+import { API } from "@/utils/apiUrl";
+import { setUser } from "@/store/slices/authSlice";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
 const ProfileSetting = () => {
-  const userInfo = useSelector(selectUserInfo);
+  const dispatch = useDispatch();
 
-  const [formData, setFormData] = useState({
-    hoTen: userInfo?.hoTen ?? "",
-    email: userInfo?.email ?? "",
-    soDT: userInfo?.soDT ?? "",
-  });
+  const [account, setAccount] = useState(null);
+  const [formData, setFormData] = useState({ hoTen: "", email: "", soDt: "" });
+  const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    const loadAccount = async () => {
+      setIsLoading(true);
+      try {
+        const res = await httpClient.post(API.QuanLyNguoiDung.ThongTinTaiKhoan);
+        setAccount(res);
+        setFormData({ hoTen: res.hoTen, email: res.email, soDt: res.soDT });
+      } catch (error) {
+        console.error("Failed to load account info:", error);
+        toast.error("Không thể tải thông tin tài khoản.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    loadAccount();
+  }, []);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -20,17 +37,37 @@ const ProfileSetting = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!account) return;
+
     setIsSubmitting(true);
     try {
-      // TODO: Implement API Update profile
-      console.log("submit profile update:", formData);
-      notifySuccess("Cập nhật thông tin thành công!");
-    } catch {
-      notifyError("Cập nhật thất bại. Vui lòng thử lại.");
+      const body = {
+        taiKhoan: account.taiKhoan,
+        matKhau: account.matKhau,
+        maNhom: account.maNhom,
+        maLoaiNguoiDung: account.maLoaiNguoiDung,
+        hoTen: formData.hoTen,
+        email: formData.email,
+        soDT: formData.soDt,
+      };
+
+      await httpClient.put(API.QuanLyNguoiDung.CapNhatThongTinNguoiDung, body);
+
+      setAccount((prev) => ({ ...prev, ...body }));
+      dispatch(setUser(body));
+      toast.success("Cập nhật thông tin thành công!");
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.content ||
+          "Cập nhật thất bại. Vui lòng thử lại.",
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading)
+    return <p className="text-center py-10">Đang tải thông tin...</p>;
 
   return (
     <div className="flex flex-col gap-y-6">
@@ -52,7 +89,7 @@ const ProfileSetting = () => {
           <div className="mt-2">
             <input
               id="taiKhoan"
-              value={userInfo?.taiKhoan ?? ""}
+              value={account?.taiKhoan ?? ""}
               disabled
               className="block w-full rounded-md bg-gray-50 px-3 py-1.5 text-base text-gray-500 outline-1 -outline-offset-1 outline-gray-300 sm:text-sm/6"
             />
@@ -72,6 +109,7 @@ const ProfileSetting = () => {
               name="hoTen"
               value={formData.hoTen}
               onChange={handleChange}
+              required
               className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
             />
           </div>
@@ -91,6 +129,7 @@ const ProfileSetting = () => {
               type="email"
               value={formData.email}
               onChange={handleChange}
+              required
               className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
             />
           </div>
@@ -98,17 +137,18 @@ const ProfileSetting = () => {
 
         <div>
           <label
-            htmlFor="soDT"
+            htmlFor="soDt"
             className="block text-sm/6 font-medium text-gray-900"
           >
             Số điện thoại
           </label>
           <div className="mt-2">
             <input
-              id="soDT"
-              name="soDT"
-              value={formData.soDT}
+              id="soDt"
+              name="soDt"
+              value={formData.soDt}
               onChange={handleChange}
+              required
               className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
             />
           </div>
