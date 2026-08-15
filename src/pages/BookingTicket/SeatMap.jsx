@@ -1,29 +1,36 @@
+import { selectAllSeats } from "@/store/slices/bookingSlice";
+import { useSelector } from "react-redux";
 import Seat from "./Seat";
-import SeatLabel from "./SeatLabel";
-import mockData from "@/data.json";
+
+const SEATS_PER_ROW = 15;
+
+const chunkIntoRows = (seats, size) => {
+  const sorted = [...seats].sort((a, b) => Number(a.stt) - Number(b.stt));
+  const rows = [];
+  for (let i = 0; i < sorted.length; i += size) {
+    rows.push(sorted.slice(i, i + size));
+  }
+  return rows;
+};
 
 const SeatMap = () => {
-  return (
-    <div className="grid gap-2 p-3 pr-6">
-      {mockData && mockData.length > 0 ? (
-        mockData.map((row) => {
-          return (
-            <div key={row.hang} className="grid grid-flow-col-dense gap-2">
-              <SeatLabel>{row.hang}</SeatLabel>
+  const allSeats = useSelector(selectAllSeats);
 
-              {row.danhSachGhe.map((seat) =>
-                seat.daDat === undefined ? (
-                  <SeatLabel key={seat.soGhe}>{seat.soGhe}</SeatLabel>
-                ) : (
-                  <Seat key={seat.soGhe} seat={seat} />
-                ),
-              )}
-            </div>
-          );
-        })
-      ) : (
-        <p>Danh sách trống</p>
-      )}
+  if (!allSeats || allSeats.length === 0) {
+    return <p className="text-light text-center">Danh sách trống</p>;
+  }
+
+  const rows = chunkIntoRows(allSeats, SEATS_PER_ROW);
+
+  return (
+    <div className="flex w-max flex-col items-center gap-2 px-3 mx-auto">
+      {rows.map((rowSeats, index) => (
+        <div key={index} className="flex items-center justify-center gap-2">
+          {rowSeats.map((seat) => (
+            <Seat key={seat.maGhe} seat={seat} />
+          ))}
+        </div>
+      ))}
     </div>
   );
 };

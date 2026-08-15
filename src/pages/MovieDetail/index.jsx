@@ -7,12 +7,11 @@ import {
   formatDateTime,
   getYoutubeEmbedUrl,
 } from "@/utils/helper";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const MovieDetail = () => {
-  const { maPhim } = useRoute().param;
-
+  const { param, navigate } = useRoute();
+  const { maPhim } = param;
   const [movie, setMovie] = useState(null);
   const [theaterSystems, setTheaterSystems] = useState([]);
   const [selectedSystemIndex, setSelectedSystemIndex] = useState(0);
@@ -166,9 +165,7 @@ const MovieDetail = () => {
                       <button
                         key={show.maLichChieu}
                         className="flex flex-col items-start rounded-md bg-gray-100 px-3 py-2 text-sm hover:bg-indigo-100"
-                        onClick={() =>
-                          console.log("book showtime:", show.maLichChieu)
-                        }
+                        onClick={() => navigate(`/booking/${show.maLichChieu}`)}
                       >
                         <span className="font-medium text-gray-900">
                           {show.tenRap} -{" "}

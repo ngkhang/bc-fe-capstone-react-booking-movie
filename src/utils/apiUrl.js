@@ -6,8 +6,9 @@ const QuanLyNguoiDung = "QuanLyNguoiDung";
 const QuanLyRap = "QuanLyRap";
 
 export const API = {
-  [QuanLyDatVe]: {},
-
+  [QuanLyDatVe]: {
+    LayDanhSachPhongVe: (maLichChieu) => `/${QuanLyDatVe}/LayDanhSachPhongVe?MaLichChieu=${maLichChieu}`,
+  },
   [QuanLyNguoiDung]: {
     DangNhap: `/${QuanLyNguoiDung}/DangNhap`,
     DangKy: `/${QuanLyNguoiDung}/DangKy`,

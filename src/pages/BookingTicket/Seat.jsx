@@ -2,33 +2,31 @@ import { addSeat, selectedSeats } from "@/store/slices/bookingSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 
-const Seat = (props) => {
+const Seat = ({ seat }) => {
   const dispatch = useDispatch();
   const seats = useSelector(selectedSeats);
 
-  const { seat } = props;
-
-  const handleAddTicket = (seat) => {
+  const handleToggleSeat = () => {
     dispatch(addSeat({ seat }));
   };
 
-  const getStyle = (daDat) => {
-    if (daDat) return "seat-block";
+  const getStyle = () => {
+    if (seat.daDat) return "seat-block";
 
-    const isChoosing =
-      seats.findIndex((item) => item.soGhe === seat.soGhe) !== -1;
-
+    const isChoosing = seats.some((item) => item.maGhe === seat.maGhe);
     if (isChoosing) return "seat-booking";
-    return "seat-empty";
+
+    return seat.loaiGhe === "Vip" ? "seat-vip" : "seat-empty";
   };
 
   return (
     <button
-      className={`text-xs text-white border-2 border-transparent rounded p-2 inline-block ${getStyle(seat.daDat)}`}
+      type="button"
+      className={`flex h-9 w-9 items-center justify-center rounded border-2 border-transparent text-xs text-white ${getStyle()}`}
       disabled={seat.daDat}
-      onClick={() => handleAddTicket(seat)}
+      onClick={handleToggleSeat}
     >
-      {seat.soGhe}
+      {seat.tenGhe}
     </button>
   );
 };

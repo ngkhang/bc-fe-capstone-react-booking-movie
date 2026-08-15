@@ -53,8 +53,9 @@ const routes = [
         element: MovieDetail,
       },
       {
-        path: "movies/booking/:maPhim",
+        path: "booking/:maLichChieu",
         element: BookingTicket,
+        guard: "protected",
       },
     ],
   },

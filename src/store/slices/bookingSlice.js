@@ -1,30 +1,45 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  seats: [],
+  thongTinPhim: null,
+  danhSachGhe: [],
+  selectedSeats: [],
 };
 
 const bookingSeatSlice = createSlice({
   name: "booking",
   initialState,
   reducers: {
-    addSeat: (state, { payload }) => {
-      const { seat } = payload;
-      let seatExisting = state.seats.find((item) => item.soGhe === seat.soGhe);
-
-      if (!seatExisting) state.seats = [...state.seats, seat];
-      else
-        state.seats = state.seats.filter(
-          (item) => item.soGhe !== seatExisting.soGhe,
-        );
+    setBookingData: (state, action) => {
+      state.thongTinPhim = action.payload.thongTinPhim;
+      state.danhSachGhe = action.payload.danhSachGhe;
+      state.selectedSeats = [];
+    },
+    addSeat: (state, action) => {
+      const { seat } = action.payload;
+      const index = state.selectedSeats.findIndex(
+        (s) => s.maGhe === seat.maGhe,
+      );
+      if (index !== -1) {
+        state.selectedSeats.splice(index, 1);
+      } else {
+        state.selectedSeats.push(seat);
+      }
     },
     delAllSeat: (state) => {
-      state.seats = [];
+      state.selectedSeats = [];
     },
+    resetBooking: () => initialState,
   },
 });
 
-export const { addSeat, delAllSeat } = bookingSeatSlice.actions;
-export const selectedSeats = (state) => state.booking.seats;
+export const { setBookingData, addSeat, delAllSeat, resetBooking } =
+  bookingSeatSlice.actions;
+
+export const selectThongTinPhim = (state) => state.booking.thongTinPhim;
+export const selectAllSeats = (state) => state.booking.danhSachGhe;
+export const selectedSeats = (state) => state.booking.selectedSeats;
+export const selectTotalPrice = (state) =>
+  state.booking.selectedSeats.reduce((sum, seat) => sum + (seat.giaVe ?? 0), 0);
 
 export const bookingReducer = bookingSeatSlice.reducer;

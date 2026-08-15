@@ -1,4 +1,8 @@
-import { delAllSeat, selectedSeats } from "@/store/slices/bookingSlice";
+import {
+  delAllSeat,
+  selectedSeats,
+  selectTotalPrice,
+} from "@/store/slices/bookingSlice";
 import { formatCurrency } from "@/utils/helper";
 import { notifyError, notifySuccess } from "@/utils/toast";
 import { useDispatch } from "react-redux";
@@ -7,21 +11,15 @@ import { useSelector } from "react-redux";
 const BookingSideBar = () => {
   const dispatch = useDispatch();
   const seats = useSelector(selectedSeats);
+  const totalPrice = useSelector(selectTotalPrice);
 
-  const getTotalPrice = () => {
-    return 0;
-  };
-
-  const handleClearSeat = () => {
-    dispatch(delAllSeat());
-  };
+  const handleClearSeat = () => dispatch(delAllSeat());
 
   const handleBookingSeat = () => {
     if (!seats.length) {
       notifyError("Vui lòng chọn ghế");
       return;
     }
-
     notifySuccess("Đặt vé thành công");
     dispatch(delAllSeat());
   };
@@ -36,7 +34,7 @@ const BookingSideBar = () => {
         <span className="col-span-1 font-medium">Ghế</span>
         {seats.length > 0 && (
           <div className="col-span-2 text-end flex justify-end items-center">
-            <span>{seats.map((seat) => seat.soGhe).join(", ")}</span>
+            <span>{seats.map((seat) => seat.tenGhe).join(", ")}</span>
             <button
               type="button"
               className="ml-2 inline-flex items-center justify-center text-white bg-danger hover:bg-danger-strong focus:ring-4 focus:ring-danger-medium shadow-xs rounded-base w-8 h-8 focus:outline-none"
@@ -65,21 +63,17 @@ const BookingSideBar = () => {
         )}
       </div>
 
-      <div className="flex justify-between items-center">
-        <div className="flex flex-col gap-2">
-          <span className="font-medium">Tạm tính</span>
-          <span>
-            {formatCurrency(seats.length > 0 ? getTotalPrice(seats) : 0)} VNĐ
-          </span>
-        </div>
-
-        <button
-          className="bg-primary text-white rounded-md inline-block px-7 py-3 cursor-pointer"
-          onClick={handleBookingSeat}
-        >
-          Đặt vé
-        </button>
+      <div className="flex justify-between items-center gap-2 mb-10">
+        <span className="font-medium">Tạm tính</span>
+        <span>{formatCurrency(totalPrice)} VNĐ</span>
       </div>
+
+      <button
+        className="bg-primary text-white rounded-md inline-block px-7 py-3 cursor-pointer w-full"
+        onClick={handleBookingSeat}
+      >
+        Đặt vé
+      </button>
     </div>
   );
 };
