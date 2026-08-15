@@ -5,6 +5,6 @@ import { Navigate } from "react-router-dom";
 export const GuestOnlyRoute = ({ children }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
 
-  if (isLoggedIn) return <Navigate to="/user/profile" replace />;
+  if (isLoggedIn) return <Navigate to="/user/dashboard" replace />;
   return children;
 };

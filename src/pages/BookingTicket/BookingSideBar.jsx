@@ -1,27 +1,53 @@
 import {
   delAllSeat,
   selectedSeats,
+  selectThongTinPhim,
   selectTotalPrice,
 } from "@/store/slices/bookingSlice";
+import { httpClient } from "@/services/httpClient";
+import { API } from "@/utils/apiUrl";
 import { formatCurrency } from "@/utils/helper";
 import { notifyError, notifySuccess } from "@/utils/toast";
-import { useDispatch } from "react-redux";
-import { useSelector } from "react-redux";
+import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import useRoute from "@/hooks/useRoute";
 
 const BookingSideBar = () => {
   const dispatch = useDispatch();
+  const { navigate } = useRoute();
   const seats = useSelector(selectedSeats);
   const totalPrice = useSelector(selectTotalPrice);
+  const thongTinPhim = useSelector(selectThongTinPhim);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleClearSeat = () => dispatch(delAllSeat());
 
-  const handleBookingSeat = () => {
+  const handleBookingSeat = async () => {
     if (!seats.length) {
       notifyError("Vui lòng chọn ghế");
       return;
     }
-    notifySuccess("Đặt vé thành công");
-    dispatch(delAllSeat());
+
+    setIsSubmitting(true);
+    try {
+      await httpClient.post(API.QuanLyDatVe.DatVe, {
+        maLichChieu: thongTinPhim.maLichChieu,
+        danhSachVe: seats.map((seat) => ({
+          maGhe: seat.maGhe,
+          giaVe: seat.giaVe,
+        })),
+      });
+
+      notifySuccess("Đặt vé thành công");
+      dispatch(delAllSeat());
+      navigate("/user/dashboard");
+    } catch (error) {
+      notifyError(
+        error?.response?.data?.content || "Đặt vé thất bại. Vui lòng thử lại.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -63,17 +89,20 @@ const BookingSideBar = () => {
         )}
       </div>
 
-      <div className="flex justify-between items-center gap-2 mb-10">
-        <span className="font-medium">Tạm tính</span>
-        <span>{formatCurrency(totalPrice)} VNĐ</span>
-      </div>
+      <div className="flex justify-between items-center">
+        <div className="flex flex-col gap-2">
+          <span className="font-medium">Tạm tính</span>
+          <span>{formatCurrency(totalPrice)} VNĐ</span>
+        </div>
 
-      <button
-        className="bg-primary text-white rounded-md inline-block px-7 py-3 cursor-pointer w-full"
-        onClick={handleBookingSeat}
-      >
-        Đặt vé
-      </button>
+        <button
+          className="bg-primary text-white rounded-md inline-block px-7 py-3 cursor-pointer disabled:cursor-not-allowed disabled:opacity-60"
+          onClick={handleBookingSeat}
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Đang đặt..." : "Đặt vé"}
+        </button>
+      </div>
     </div>
   );
 };
