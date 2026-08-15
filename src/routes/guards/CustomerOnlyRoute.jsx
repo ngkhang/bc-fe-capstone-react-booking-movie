@@ -3,18 +3,12 @@ import { USER_ROLE } from "@/utils/constant";
 import { useSelector } from "react-redux";
 import { Navigate } from "react-router-dom";
 
-export const GuestOnlyRoute = ({ children }) => {
+export const CustomerOnlyRoute = ({ children }) => {
   const isLoggedIn = useSelector(selectIsLoggedIn);
   const userInfo = useSelector(selectUserInfo);
 
-  if (isLoggedIn) {
-    return (
-      <Navigate
-        to={userInfo?.maLoaiNguoiDung === USER_ROLE.ADMIN ? "/admin" : "/"}
-        replace
-      />
-    );
+  if (isLoggedIn && userInfo?.maLoaiNguoiDung === USER_ROLE.ADMIN) {
+    return <Navigate to="/admin" replace />;
   }
-
   return children;
 };

@@ -2,8 +2,7 @@ import useRoute from "@/hooks/useRoute";
 import { httpClient } from "@/services/httpClient";
 import { API } from "@/utils/apiUrl";
 import { formatDate } from "@/utils/helper";
-import { useEffect } from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const fetchMovieShowTimes = async (codeTheaterSystem) =>
   await httpClient.get(
@@ -133,9 +132,7 @@ const Theater = () => {
                           />
                           <div
                             className="min-w-0 flex-auto"
-                            onClick={() =>
-                              navigate(`/movies/detail/${movie.maPhim}`)
-                            }
+                            onClick={() => navigate(`/movies/${movie.maPhim}`)}
                           >
                             <p className="text-xl font-semibold text-gray-900">
                               {movie.tenPhim}

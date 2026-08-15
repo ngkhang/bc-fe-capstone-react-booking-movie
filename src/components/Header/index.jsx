@@ -18,14 +18,14 @@ import {
 } from "@/store/slices/authSlice";
 
 const navigation = [
-  { name: "Trang chủ", href: "/", current: true },
-  { name: "Lịch chiếu phim", href: "/movies", current: false },
-  { name: "Tin Tức", href: "#", current: false },
+  { name: "Home", href: "/", current: true },
+  { name: "List Movie", href: "/movies/list-movie", current: false },
+  { name: "News", href: "#", current: false },
 ];
 
 const userNavigation = [
+  { name: "Dashboard", href: "/user/dashboard" },
   { name: "Your profile", href: "/user/profile" },
-  { name: "Settings", href: "#" },
 ];
 
 function classNames(...classes) {

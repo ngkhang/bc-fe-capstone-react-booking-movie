@@ -32,7 +32,7 @@ export function MovieItem(props) {
         )}
       </button>
 
-      <Link to={`/movies/detail/${maPhim}`} className="mb-1.5">
+      <Link to={`/movies/${maPhim}`} className="mb-1.5">
         <h3 className="mt-4 text-sm font-bold text-gray-700">{tenPhim}</h3>
       </Link>
 
@@ -51,7 +51,7 @@ export function MovieItem(props) {
 
         <Button
           className="cursor-pointer"
-          onClick={() => navigate(`/movies/detail/${maPhim}`)}
+          onClick={() => navigate(`/movies/${maPhim}`)}
         >
           Booking now
         </Button>

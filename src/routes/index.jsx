@@ -17,26 +17,38 @@ import {
   UserTemplate,
 } from "@/templates";
 import { Navigate, Route } from "react-router-dom";
-import { AdminRoute, GuestOnlyRoute, ProtectedRoute } from "./guards";
+import {
+  AdminRoute,
+  CustomerOnlyRoute,
+  GuestOnlyRoute,
+  ProtectedRoute,
+} from "./guards";
+import MovieList from "@/components/MovieList";
 
 const GUARDS = {
   protected: ProtectedRoute,
   guestOnly: GuestOnlyRoute,
   admin: AdminRoute,
+  customerOnly: CustomerOnlyRoute,
 };
 
 const buildElement = (item) => {
   if (item.redirect) return <Navigate to={item.redirect} replace />;
 
   const Element = item.element;
-  let content = <Element />;
+  const guardNames = Array.isArray(item.guard)
+    ? item.guard
+    : item.guard
+      ? [item.guard]
+      : [];
 
-  if (item.guard) {
-    const Guard = GUARDS[item.guard];
-    content = <Guard>{content}</Guard>;
-  }
-
-  return content;
+  return guardNames.reduceRight(
+    (content, name) => {
+      const Guard = GUARDS[name];
+      return <Guard>{content}</Guard>;
+    },
+    <Element />,
+  );
 };
 
 const routes = [
@@ -48,10 +60,8 @@ const routes = [
         path: "",
         element: HomePage,
       },
-      {
-        path: "movies/detail/:maPhim",
-        element: MovieDetail,
-      },
+      { path: "movies/list-movie", element: MovieList },
+      { path: "movies/:maPhim", element: MovieDetail },
       {
         path: "booking/:maLichChieu",
         element: BookingTicket,
@@ -92,7 +102,7 @@ const routes = [
   {
     path: "user",
     element: UserTemplate,
-    guard: "protected",
+    guard: ["protected", "customerOnly"],
     children: [
       {
         path: "",
