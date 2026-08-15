@@ -4,6 +4,7 @@ import Register from "./Auth/Register";
 import BookingTicket from "./BookingTicket";
 import HomePage from "./Home";
 import MovieDetail from "./MovieDetail";
+import MovieList from "./MovieList";
 import PageNotFound from "./NotFound";
 import UserManagement from "./UserManagement";
 import UserDashboard from "./UserProfile/Dashboard";
@@ -20,4 +21,5 @@ export {
   ProfileSetting,
   UserManagement,
   BookingTicket,
+  MovieList,
 };

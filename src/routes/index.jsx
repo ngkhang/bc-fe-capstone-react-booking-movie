@@ -4,6 +4,7 @@ import {
   HomePage,
   Login,
   MovieDetail,
+  MovieList,
   PageNotFound,
   ProfileSetting,
   Register,
@@ -23,7 +24,6 @@ import {
   GuestOnlyRoute,
   ProtectedRoute,
 } from "./guards";
-import MovieList from "@/components/MovieList";
 
 const GUARDS = {
   protected: ProtectedRoute,

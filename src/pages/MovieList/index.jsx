@@ -1,11 +1,10 @@
-import BannerMovie from "@/components/Banner";
 import MovieList from "@/components/MovieList";
 import Theater from "@/components/Theater";
 import { httpClient } from "@/services/httpClient";
 import { API } from "@/utils/apiUrl";
 import { useEffect, useState } from "react";
 
-const HomePage = () => {
+const MovieListPage = () => {
   const [movies, setMovies] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -13,12 +12,10 @@ const HomePage = () => {
     const loadMovies = async () => {
       setIsLoading(true);
       try {
-        const res = await httpClient.get(
-          API.QuanLyPhim.LayDanhSachPhimPhanTrang(1, 8),
-        );
-        setMovies(res?.items ?? []);
+        const res = await httpClient.get(API.QuanLyPhim.LayDanhSachPhim);
+        setMovies(res ?? []);
       } catch (error) {
-        console.error("Failed to load movies:", error);
+        console.error("Failed to load movie list:", error);
       } finally {
         setIsLoading(false);
       }
@@ -26,21 +23,26 @@ const HomePage = () => {
     loadMovies();
   }, []);
 
+  if (isLoading)
+    return <p className="py-10 text-center">Đang tải danh sách phim...</p>;
+
+  const nowShowing = movies.filter((m) => m.dangChieu);
+  const comingSoon = movies.filter((m) => m.sapChieu && !m.dangChieu);
+
   return (
     <div className="flex flex-col gap-y-10">
-      <div className="h-56 sm:h-64 xl:h-80 2xl:h-96">
-        <BannerMovie />
-      </div>
+      <MovieList
+        title="Phim đang chiếu"
+        movies={nowShowing}
+        emptyMessage="Hiện chưa có phim đang chiếu."
+      />
 
-      {isLoading ? (
-        <p className="py-10 text-center">Đang tải danh sách phim...</p>
-      ) : (
-        <MovieList
-          title="Phim nổi bật"
-          movies={movies}
-          viewMoreTo="/movies/list-movie"
-        />
-      )}
+      <MovieList
+        title="Phim sắp chiếu"
+        movies={comingSoon}
+        emptyMessage="Hiện chưa có phim sắp chiếu."
+        isComingSoon
+      />
 
       <section>
         <h2 className="mb-4 text-xl font-bold text-gray-900">
@@ -52,4 +54,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default MovieListPage;

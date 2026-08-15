@@ -1,15 +1,15 @@
-import { Button } from "flowbite-react";
-import { Link } from "react-router-dom";
-import { PlayCircleIcon } from "@heroicons/react/24/outline";
-import { useState } from "react";
-import TrailerModal from "@/components/TrailerModel";
+import ShowtimeModal from "@/components/ShowtimeModal";
 import { getYoutubeEmbedUrl } from "@/utils/helper";
-import useRoute from "@/hooks/useRoute";
+import { PlayCircleIcon } from "@heroicons/react/24/outline";
+import { Button } from "flowbite-react";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import TrailerModal from "@/components/TrailerModel";
 
-export function MovieItem(props) {
-  const { navigate } = useRoute();
+export function MovieItem({ movie, isComingSoon = false }) {
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
-  const { danhGia, hinhAnh, maPhim, tenPhim, trailer, biDanh } = props.movie;
+  const [isShowtimeOpen, setIsShowtimeOpen] = useState(false);
+  const { danhGia, hinhAnh, maPhim, tenPhim, trailer, biDanh } = movie;
 
   const hasTrailer = Boolean(getYoutubeEmbedUrl(trailer));
 
@@ -49,12 +49,14 @@ export function MovieItem(props) {
           <p className="text-lg font-medium text-gray-900">{danhGia}</p>
         </div>
 
-        <Button
-          className="cursor-pointer"
-          onClick={() => navigate(`/movies/${maPhim}`)}
-        >
-          Booking now
-        </Button>
+        {!isComingSoon && (
+          <Button
+            className="cursor-pointer"
+            onClick={() => setIsShowtimeOpen(true)}
+          >
+            Booking now
+          </Button>
+        )}
       </div>
 
       <TrailerModal
@@ -63,6 +65,14 @@ export function MovieItem(props) {
         trailerUrl={trailer}
         title={tenPhim}
       />
+
+      {!isComingSoon && (
+        <ShowtimeModal
+          isOpen={isShowtimeOpen}
+          onClose={() => setIsShowtimeOpen(false)}
+          movie={movie}
+        />
+      )}
     </div>
   );
 }

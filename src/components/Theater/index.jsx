@@ -146,7 +146,9 @@ const Theater = () => {
                               <button
                                 key={show.maLichChieu}
                                 className="bg-gray-100 rounded-md py-1 px-2"
-                                onClick={() => console.log(show.maLichChieu)}
+                                onClick={() =>
+                                  navigate(`/booking/${show.maLichChieu}`)
+                                }
                               >
                                 <span>{show.tenRap}</span> -
                                 <span>

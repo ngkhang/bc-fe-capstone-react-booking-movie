@@ -6,7 +6,6 @@ import {
   DialogTitle,
 } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-
 const TrailerModal = ({ isOpen, onClose, trailerUrl, title }) => {
   const embedUrl = getYoutubeEmbedUrl(trailerUrl);
 
